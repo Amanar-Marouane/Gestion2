@@ -20,7 +20,6 @@ int contacts_num = 0;
 int search_index = -1;
 
 void modify();
-void search_for_modify();
 void search();
 void add();
 int main(){
