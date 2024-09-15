@@ -6,7 +6,7 @@
 #define MAX_NAME_LENGTH 50
 #define MAX_PHONE_NUMBER_LENGTH 30
 #define MAX_EMAIL_LENGTH 256
-#define MAX_CONTACTS 50
+#define MAX_CONTACTS 100
 #define MAX_SEARCHING_LENGTH 256
 
 struct contact{
@@ -19,11 +19,17 @@ struct contact contacts[MAX_CONTACTS];
 int contacts_num = 0;
 int search_index = -1;
 
+int name_validator();
+int num_validator();
+int email_validator();
 void modify();
 void search();
 void add();
 int main(){
     int choice;
+
+    printf("\n\nWelcome to Contact panel !!\n");
+    printf("----------------------------------------------------\n");
     do
     {
         printf("Press 0 to quit.\n");
@@ -38,6 +44,8 @@ int main(){
 
         switch (choice)
         {
+        case 0:
+            break;
         case 1:
             add();
             break;
@@ -54,6 +62,8 @@ int main(){
             break;
         }
     } while (choice != 0);
+    printf("See you next time !!\n");
+    printf("----------------------------------------------------\n");
     return 0;
 }
 void add(){
@@ -64,19 +74,29 @@ void add(){
         return ;
     }
 
-    printf("Enter the name : ");
-    getchar();
-    fgets(contacts[contacts_num].Name, MAX_NAME_LENGTH, stdin);
-    printf("----------------------------------------------------\n");
-    contacts[contacts_num].Name[strcspn(contacts[contacts_num].Name, "\n")] = '\0';
+    do
+    {
+        printf("Enter a valid name (a-z A-Z) : ");
+        getchar();
+        fgets(contacts[contacts_num].Name, MAX_NAME_LENGTH, stdin);
+        contacts[contacts_num].Name[strcspn(contacts[contacts_num].Name, "\n")] = '\0';
+    } while (name_validator() == 1);
 
-    printf("Enter the phone number : ");
-    scanf("%s",contacts[contacts_num].Phone_Number);
-    printf("----------------------------------------------------\n");
-
-    printf("Enter the email : ");
-    scanf("%s",contacts[contacts_num].Email);
-    printf("----------------------------------------------------\n");
+    do
+    {
+        printf("Enter a valid phone number (0-9) : ");
+        fgets(contacts[contacts_num].Phone_Number, MAX_NAME_LENGTH, stdin);
+        contacts[contacts_num].Phone_Number[strcspn(contacts[contacts_num].Phone_Number, "\n")] = '\0';
+    } while (num_validator() == 0);
+    
+    do
+    {
+        printf("Enter the email : ");
+        getchar();
+        fgets(contacts[contacts_num].Email, MAX_NAME_LENGTH, stdin);
+        contacts[contacts_num].Email[strcspn(contacts[contacts_num].Email, "\n")] = '\0';
+    } while (email_validator() == 1);
+    
 
     contacts_num++;
     printf("Contact added successfully!\n");
@@ -115,10 +135,9 @@ void search(){
             {
                 if (strcmp(contacts[i].Name, Search) == 0)
                 {
-                    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n",contacts[i].Name, contacts[i].Phone_Number, contacts[i].Email);
+                    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n\n",contacts[i].Name, contacts[i].Phone_Number, contacts[i].Email);
                     printf("----------------------------------------------------\n");
                     found = 1;
-                    break;
                 }
             }
             if (found != 1)
@@ -136,10 +155,9 @@ void search(){
             {
                 if (strcmp(contacts[i].Phone_Number, Search) == 0)
                 {
-                    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n",contacts[i].Name, contacts[i].Phone_Number, contacts[i].Email);
+                    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n\n",contacts[i].Name, contacts[i].Phone_Number, contacts[i].Email);
                     printf("----------------------------------------------------\n");
                     found = 1;
-                    break;
                 }
             }
             if (found != 1)
@@ -157,10 +175,9 @@ void search(){
             {
                 if (strcmp(contacts[i].Email, Search) == 0)
                 {
-                    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n",contacts[i].Name, contacts[i].Phone_Number, contacts[i].Email);
+                    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n\n",contacts[i].Name, contacts[i].Phone_Number, contacts[i].Email);
                     printf("----------------------------------------------------\n");
                     found = 1;
-                    break;
                 }
             }
             if (found != 1)
@@ -323,4 +340,76 @@ void modify(){
     printf("The modification done seccussfuly!!\n");
     printf("----------------------------------------------------\n");
     search_index = -1;
+}
+int name_validator(){
+    contacts[contacts_num].Name[strcspn(contacts[contacts_num].Name," ")] = '\0';
+    for (int i = 0;contacts[contacts_num].Name[i] != '\0' ; i++)
+    {
+        if (!isalpha(contacts[contacts_num].Name[i]))
+        {
+            printf("==>Contact name is not valid .\n(Must contain only alphabets!!)\n");
+            printf("----------------------------------------------------------------\n");
+            return 1;
+        }
+    }
+    printf("==>Contact name is accepted !!\n");
+    printf("----------------------------------------------------------------\n");
+    return 0;
+}
+int num_validator(){
+    for (int i = 0;contacts[contacts_num].Phone_Number[i] != '\0' ; i++)
+    {
+        if (!isdigit(contacts[contacts_num].Phone_Number[i]))
+        {
+            printf("==>Phone number is not valid.\n(Must contain only digits!!)\n");
+            printf("----------------------------------------------------------------\n");
+            return 0;
+        }
+    }
+    printf("==>Phone number is accepted !!\n");
+    printf("----------------------------------------------------------------\n");
+    return 1;
+}
+int email_validator(){
+    char *at = strchr(contacts[contacts_num].Email, '@');
+    char *dot = strrchr(contacts[contacts_num].Email, '.');
+
+    printf(".\n.\n.\n");
+    if (at == NULL || dot == NULL || dot < at)
+    {
+        printf("==>Email is not valid.\n(Must be in the format username@example.domain)\n");
+        printf("----------------------------------------------------------------\n");
+        return 1;
+    }
+
+    for (char i = 0; i < (at - contacts[contacts_num].Email); i++)
+    {
+        if (!(isalnum(contacts[contacts_num].Email[i]) || contacts[contacts_num].Email[i] == '.' || contacts[contacts_num].Email[i] == '-' || contacts[contacts_num].Email[i] == '_'))
+        {
+            printf("==>The username part accept only ('A-Z', 'a-z', '0-9', '.', '-', '_').\n");
+            printf("-----------------------------------------------------------------------\n");
+            return 1;
+        }
+    }
+    for (char i = (at - contacts[contacts_num].Email) + 1; i < (dot - contacts[contacts_num].Email); i++)
+    {
+        if (!isalpha(contacts[contacts_num].Email[i]))
+        {
+            printf("==>Special symbol and numbers not valid atfer '@'.\n");
+            printf("-----------------------------------------------------------------------\n");
+            return 1;
+        }
+    }
+    for (char i = (dot - contacts[contacts_num].Email) + 1; contacts[contacts_num].Email[i] != '\0'; i++)
+    {
+        if (!isalpha(contacts[contacts_num].Email[i]))
+        {
+            printf("==>Special symbol and numbers not valid after the domaine part.\n");
+            printf("-----------------------------------------------------------------------\n");
+            return 1;
+        }
+    }
+    printf("==>The email accepted !!\n");
+    printf("-----------------------------------------------------------------------\n");
+    return 0;
 }
