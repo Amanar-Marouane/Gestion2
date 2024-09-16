@@ -25,7 +25,8 @@ int name_validator(int contacts_num);
 int num_validator(int contacts_num);
 int email_validator(int contacts_num);
 void modify();
-void search();
+int search(int search_index);
+void Display_One_contact();
 void delete();
 void add();
 int main(){
@@ -54,7 +55,7 @@ int main(){
             add();
             break;
         case '2':
-            search();
+            Display_One_contact();
             break;
         case '3':
             modify();
@@ -64,7 +65,7 @@ int main(){
             break;
         
         default:
-            printf("Press a valid number.\n");
+            printf("Invalid choice, please select a valid option.\n");
             printf("----------------------------------------------------\n");
             break;
         }
@@ -91,14 +92,14 @@ void add(){
     do
     {
         printf("Enter a valid phone number (0-9) : ");
-        fgets(contacts[contacts_num].Phone_Number, MAX_NAME_LENGTH, stdin);
+        fgets(contacts[contacts_num].Phone_Number, MAX_PHONE_NUMBER_LENGTH, stdin);
         contacts[contacts_num].Phone_Number[strcspn(contacts[contacts_num].Phone_Number, "\n")] = '\0';
     } while (num_validator(contacts_num) == 0);
     
     do
     {
         printf("Enter the email : ");
-        fgets(contacts[contacts_num].Email, MAX_NAME_LENGTH, stdin);
+        fgets(contacts[contacts_num].Email, MAX_EMAIL_LENGTH, stdin);
         contacts[contacts_num].Email[strcspn(contacts[contacts_num].Email, "\n")] = '\0';
     } while (email_validator(contacts_num) == 1);
     
@@ -107,12 +108,12 @@ void add(){
     printf("Contact added successfully!\n");
     printf("----------------------------------------------------\n");
 }
-void search(){
+int search(int search_index){
     if (contacts_num == 0)
     {
         printf("There's no contact to search for.\n");
         printf("----------------------------------------------------\n");
-        return ;
+        return search_index = -2;
     }
 
     char choice[10];
@@ -125,7 +126,6 @@ void search(){
     printf("----------------------------------------------------\n");
 
     char Search[MAX_SEARCHING_LENGTH];
-    int found = 0;
 
     do
     {
@@ -140,15 +140,9 @@ void search(){
             {
                 if (strcmp(contacts[i].Name, Search) == 0)
                 {
-                    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n\n",contacts[i].Name, contacts[i].Phone_Number, contacts[i].Email);
-                    printf("----------------------------------------------------\n");
-                    found = 1;
+                    search_index = i;
+                    break;
                 }
-            }
-            if (found != 1)
-            {
-                printf("No contact found :(\n");
-                printf("----------------------------------------------------\n");
             }
             break;
         case '2':
@@ -160,15 +154,9 @@ void search(){
             {
                 if (strcmp(contacts[i].Phone_Number, Search) == 0)
                 {
-                    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n\n",contacts[i].Name, contacts[i].Phone_Number, contacts[i].Email);
-                    printf("----------------------------------------------------\n");
-                    found = 1;
+                    search_index = i;
+                    break;
                 }
-            }
-            if (found != 1)
-            {
-                printf("No contact found :(\n");
-                printf("----------------------------------------------------\n");
             }
             break;
         case '3':
@@ -180,15 +168,9 @@ void search(){
             {
                 if (strcmp(contacts[i].Email, Search) == 0)
                 {
-                    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n\n",contacts[i].Name, contacts[i].Phone_Number, contacts[i].Email);
-                    printf("----------------------------------------------------\n");
-                    found = 1;
+                    search_index = i;
+                    break;
                 }
-            }
-            if (found != 1)
-            {
-                printf("No contact found :(\n");
-                printf("----------------------------------------------------\n");
             }
             break;
         default:
@@ -197,109 +179,31 @@ void search(){
             break;
         }
     } while (!(choice[0] == '1' || choice[0] == '2' || choice[0] == '3'));
-     search_index = -1;
+    return search_index;
 }
 void modify(){
-    if (contacts_num == 0)
-    {
-        printf("There's no contact to search for modification.\n");
-        printf("----------------------------------------------------\n");
-        return ;
-    }
-
-    char choice[10];
-    printf("Press 1 to search by the name to set new modification .\n");
-    printf("Press 2 to search by the number to set new modification .\n");
-    printf("Press 3 to search by the email to set new modification .\n");
-    printf("==> ");
-    fgets(choice, sizeof(choice), stdin);
-    choice[strcspn(choice, "\n")] = '\0';
-    printf("----------------------------------------------------\n");
-
-    char Search[MAX_SEARCHING_LENGTH];
-    int found = 0;
-
-    switch (choice[0])
-    {
-    case '1':
-        printf("Enter the name u want to modify his contact : ");
-        fgets(Search, MAX_NAME_LENGTH, stdin);
-        printf("----------------------------------------------------\n");
-        Search[strcspn(Search,"\n")] = '\0';
-        for (int i = 0; i < contacts_num; i++)
-        {
-            if (strcmp(contacts[i].Name, Search) == 0)
-            {
-                found = 1;
-                search_index = i;
-                break;
-            }
-        }
-        if (found != 1)
-        {
-            printf("No contact found to modify :(\n");
-            printf("----------------------------------------------------\n");
-        }
-        break;
-    case '2':
-        printf("Enter the phone number u want to modify his contact : ");
-        fgets(Search, MAX_PHONE_NUMBER_LENGTH, stdin);
-        printf("----------------------------------------------------\n");
-        Search[strcspn(Search,"\n")] = '\0';
-        for (int i = 0; i < contacts_num; i++)
-        {
-            if (strcmp(contacts[i].Phone_Number, Search) == 0)
-            {
-                found = 1;
-                search_index = i;
-                break;
-            }
-        }
-        if (found != 1)
-        {
-            printf("No contact found to modify :(\n");
-            printf("----------------------------------------------------\n");
-        }
-        break;
-    case '3':
-        printf("Enter the email u want to modify his contact : ");
-        fgets(Search, MAX_EMAIL_LENGTH, stdin);
-        printf("----------------------------------------------------\n");
-        Search[strcspn(Search,"\n")] = '\0';
-        for (int i = 0; i < contacts_num; i++)
-        {
-            if (strcmp(contacts[i].Email, Search) == 0)
-            {
-                found = 1;
-                search_index = i;
-                break;
-            }
-        }
-        if (found != 1)
-        {
-            printf("No contact found to modify :(\n");
-            printf("----------------------------------------------------\n");
-        }
-        break;
-    default:
-        printf("Press a valid number.\n");
-        printf("----------------------------------------------------\n");
-        break;
-    }
-
-    if (search_index == -1)
+    search_index = search(search_index);
+    if (search_index == -2)
     {
         return;
     }
+    
+    if (search_index == -1)
+    {
+        printf("No contact found!!\n");
+        printf("----------------------------------------------------\n");
+        return;
+    }
 
-    char Y_N[10];
+    char Y_N, res;
     do
     {
         printf("Press y/n to modify the name ==> ");
-        fgets(Y_N, sizeof(Y_N), stdin);
-        Y_N[strcspn(Y_N, "\n")] = '\0';
-    } while (!(Y_N[0] == 'y' || Y_N[0] == 'n'));
-    if (Y_N[0] == 'y')
+        scanf(" %c",&Y_N);
+        getchar();
+        res = tolower(Y_N);
+    } while (!(res == 'y' || res == 'n'));
+    if (res == 'y')
     {
         memset(contacts[search_index].Name, 0, sizeof(contacts[search_index].Name));
         do
@@ -317,10 +221,11 @@ void modify(){
     do
     {
         printf("Press y/n to modify the number ==> ");
-        fgets(Y_N, sizeof(Y_N), stdin);
-        Y_N[strcspn(Y_N, "\n")] = '\0';
-    } while (!(Y_N[0] == 'y' || Y_N[0] == 'n'));
-    if (Y_N[0] == 'y')
+        scanf(" %c",&Y_N);
+        getchar();
+        res = tolower(Y_N);
+    } while (!(res == 'y' || res == 'n'));
+    if (res == 'y')
     {
         memset(contacts[search_index].Phone_Number, 0, sizeof(contacts[search_index].Phone_Number));
         do
@@ -338,16 +243,17 @@ void modify(){
     do
     {
         printf("Press y/n to modify the email ==> ");
-        fgets(Y_N, sizeof(Y_N), stdin);
-        Y_N[strcspn(Y_N, "\n")] = '\0';
-    } while (!(Y_N[0] == 'y' || Y_N[0] == 'n'));
-    if (Y_N[0] == 'y')
+        scanf(" %c",&Y_N);
+        getchar();
+        res = tolower(Y_N);
+    } while (!(res == 'y' || res == 'n'));
+    if (res == 'y')
     {
         memset(contacts[search_index].Email, 0, sizeof(contacts[search_index].Email));
         do
         {
             printf("Set ur new email : ");
-            fgets(contacts[search_index].Email, MAX_PHONE_NUMBER_LENGTH, stdin);
+            fgets(contacts[search_index].Email, MAX_EMAIL_LENGTH, stdin);
             contacts[search_index].Email[strcspn(contacts[search_index].Email,"\n")] = '\0';
             printf("----------------------------------------------------\n");
         } while (email_validator(search_index) == 1);
@@ -446,95 +352,16 @@ int email_validator(int contacts_num){
     return 0;
 }
 void delete(){
-    if (contacts_num == 0)
+    delete_index = search(delete_index);
+    if (delete_index == -2)
     {
-        printf("There's no contact to delete.\n");
-        printf("----------------------------------------------------\n");
-        return ;
+        return;
     }
-
-    char choice[10];
-    printf("Press 1 to input the name of the contact u want to delete .\n");
-    printf("Press 2 to input the number of the contact u want to delete .\n");
-    printf("Press 3 to input the email of the contact u want to delete .\n");
-    printf("==> ");
-    fgets(choice, sizeof(choice), stdin);
-    choice[strcspn(choice, "\n")] = '\0';
-    printf("----------------------------------------------------\n");
-
-    char Search[MAX_SEARCHING_LENGTH];
-    int found = 0;
-
-    do
-    {
-        switch (choice[0])
-        {
-        case '1':
-            printf("Enter the name u want to modify his contact : ");
-            fgets(Search, MAX_NAME_LENGTH, stdin);
-            Search[strcspn(Search,"\n")] = '\0';
-            for (int i = 0; i < contacts_num; i++)
-            {
-                if (strcmp(contacts[i].Name, Search) == 0)
-                {
-                    found = 1;
-                    delete_index = i;
-                    break;
-                }
-            }
-            if (found != 1)
-            {
-                printf("No contact found to delete :(\n");
-                printf("----------------------------------------------------\n");
-            }
-            break;
-        case '2':
-            printf("Enter the phone number u want to modify his contact : ");
-            fgets(Search, MAX_PHONE_NUMBER_LENGTH, stdin);
-            Search[strcspn(Search,"\n")] = '\0';
-            for (int i = 0; i < contacts_num; i++)
-            {
-                if (strcmp(contacts[i].Phone_Number, Search) == 0)
-                {
-                    found = 1;
-                    delete_index = i;
-                    break;
-                }
-            }
-            if (found != 1)
-            {
-                printf("No contact found to delete :(\n");
-                printf("----------------------------------------------------\n");
-            }
-            break;
-        case '3':
-            printf("Enter the email u want to modify his contact : ");
-            fgets(Search, MAX_EMAIL_LENGTH, stdin);
-            Search[strcspn(Search,"\n")] = '\0';
-            for (int i = 0; i < contacts_num; i++)
-            {
-                if (strcmp(contacts[i].Email, Search) == 0)
-                {
-                    found = 1;
-                    delete_index = i;
-                    break;
-                }
-            }
-            if (found != 1)
-            {
-                printf("No contact found to delete :(\n");
-                printf("----------------------------------------------------\n");
-            }
-            break;
-        default:
-            printf("Press a valid number.\n");
-            printf("----------------------------------------------------\n");
-            break;
-        }
-    } while (!(choice[0] == '1' || choice[0] == '2' || choice[0] == '3'));
 
     if (delete_index == -1)
     {
+        printf("No contact found!!\n");
+        printf("----------------------------------------------------\n");
         return;
     }
 
@@ -546,4 +373,20 @@ void delete(){
     delete_index = -1;
     printf("Contact has been delete successfuly!!\n");
     printf("----------------------------------------------------\n");
+}
+void Display_One_contact(){
+    search_index = search(search_index);
+    if (search_index == -2)
+    {
+        return;
+    }
+    if (search_index == -1)
+    {
+        printf("No contact found!!\n");
+        printf("----------------------------------------------------\n");
+        return;
+    }
+    printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n\n",contacts[search_index].Name, contacts[search_index].Phone_Number, contacts[search_index].Email);
+    printf("----------------------------------------------------\n");
+    search_index = -1;
 }
