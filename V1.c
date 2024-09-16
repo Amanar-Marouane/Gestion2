@@ -315,20 +315,40 @@ int email_validator(int contacts_num){
 
     if (at == NULL || dot == NULL || dot < at)
     {
-        printf("==>Email is not valid.\n(Must be in the format username@example.domain)\n");
+        printf("==>Email is not valid.\n(Must be in the format username@domaine.extension)\n");
         printf("----------------------------------------------------------------\n");
         return 1;
     }
 
+    if (at == contacts[contacts_num].Email)
+    {
+        printf("==> The username part before '@' cannot be empty. (username@domaine.extension)\n");
+        printf("-----------------------------------------------------------------------\n");
+        return 1;
+    }
+    if (at + 1 == dot)
+    {
+        printf("==> The example part between '@' and '.' cannot be empty. (username@domaine.extension)\n");
+        printf("----------------------------------------------------------------\n");
+        return 1;
+    }
+    if (*(dot + 1) == '\0')
+    {
+        printf("==> The domain extension after '.' cannot be empty. (username@domaine.extension)\n");
+        printf("----------------------------------------------------------------\n");
+        return 1;
+    }
+    
     for (char i = 0; i < (at - contacts[contacts_num].Email); i++)
     {
-        if (!(isalnum(contacts[contacts_num].Email[i]) || contacts[contacts_num].Email[i] == '.' || contacts[contacts_num].Email[i] == '-' || contacts[contacts_num].Email[i] == '_'))
+        if (!(isalnum(contacts[contacts_num].Email[i]) || contacts[contacts_num].Email[i] == '.' || contacts[contacts_num].Email[i] == '-' || contacts[contacts_num].Email[i] == '_') && isspace(contacts[contacts_num].Email[i]))
         {
-            printf("==>The username part accept only ('A-Z', 'a-z', '0-9', '.', '-', '_').\n");
+            printf("==>The username part accept only ('A-Z', 'a-z', '0-9', '.', '-', '_'), Space not include.\n");
             printf("-----------------------------------------------------------------------\n");
             return 1;
         }
     }
+
     for (char i = (at - contacts[contacts_num].Email) + 1; i < (dot - contacts[contacts_num].Email); i++)
     {
         if (!isalpha(contacts[contacts_num].Email[i]))
@@ -338,11 +358,12 @@ int email_validator(int contacts_num){
             return 1;
         }
     }
+
     for (char i = (dot - contacts[contacts_num].Email) + 1; contacts[contacts_num].Email[i] != '\0'; i++)
     {
         if (!isalpha(contacts[contacts_num].Email[i]))
         {
-            printf("==>Special symbol and numbers not valid after the domaine part.\n");
+            printf("==>Special symbol and numbers not valid in the extension part.\n");
             printf("-----------------------------------------------------------------------\n");
             return 1;
         }
