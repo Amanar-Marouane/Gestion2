@@ -24,6 +24,8 @@ int delete_index = -1;
 int name_validator(int contacts_num);
 int num_validator(int contacts_num);
 int email_validator(int contacts_num);
+void sorting();
+void Display_All();
 void modify();
 int search(int search_index);
 void Display_One_contact();
@@ -32,16 +34,18 @@ void add();
 int main(){
     char choice[10];
 
-    printf("\n\nWelcome to Contact panel !!\n");
+    printf("\n----------------------------------------------------\n");
+    printf("Welcome to Contact panel !!\n");
     printf("----------------------------------------------------\n");
     do
     {
-        printf("Press 0 to quit.\n");
+        printf("\nPress 0 to quit.\n");
         printf("Press 1 to add a contact.\n");
         printf("Press 2 to search a contact.\n");
         printf("Press 3 to modify a contact.\n");
         printf("Press 4 to remove a contact.\n");
-        printf("Press 5 to display all the contacts.\n");
+        printf("Press 5 to sort the contacts.\n");
+        printf("Press 6 to display all the contacts.\n");
         printf("==> ");
         fgets(choice, sizeof(choice), stdin);
         choice[strcspn(choice, "\n")] = '\0';
@@ -63,7 +67,12 @@ int main(){
         case '4':
             delete();
             break;
-        
+        case '5':
+            sorting();
+            break;
+        case '6':
+            Display_All();
+            break;
         default:
             printf("Invalid choice, please select a valid option.\n");
             printf("----------------------------------------------------\n");
@@ -75,7 +84,7 @@ int main(){
     return 0;
 }
 void add(){
-    if (contacts_num == MAX_CONTACTS)
+    if (contacts_num >= MAX_CONTACTS)
     {
         printf("Contacts reached max number !!");
         printf("----------------------------------------------------\n");
@@ -410,4 +419,93 @@ void Display_One_contact(){
     printf("Contact found!\nName: %s.\nPhone: %s.\nEmail: %s\n\n",contacts[search_index].Name, contacts[search_index].Phone_Number, contacts[search_index].Email);
     printf("----------------------------------------------------\n");
     search_index = -1;
+}
+void Display_All(){
+    for (int i = 0; i < contacts_num; i++) {
+        printf("Name: %s", contacts[i].Name);
+        printf("\nPhone: %s", contacts[i].Phone_Number);
+        printf("\nEmail: %s\n", contacts[i].Email);
+        printf("----------------------------------------\n");
+    }
+}
+void sorting(){
+    if (contacts_num == 0)
+    {
+        printf("No contact to sort.\n");
+        return;
+    }
+    char choice[10];
+    struct contact swap;
+    int res;
+
+    printf("To sort ur contacts :\n");
+    printf("Press 1 to sort by name. (A-Z)\n");
+    printf("Press 2 to sort by phone number. (0-9)\n");
+    printf("Press 3 to sort by email adress. (A-Z)\n");
+    printf("Press 0 to cancel.\n");
+    printf("==> ");
+    fgets(choice, 10, stdin);
+    printf("----------------------------------------------------\n");
+    choice[strcspn(choice,"\n")] = '\0';
+    
+    switch (choice[0])
+    {
+    case '0':
+        break;
+    case '1':
+        for (int i = 0; i < contacts_num; i++)
+        {   
+            for (int j = 0; j < contacts_num - i - 1; j++)
+            {
+                res = strcmp(contacts[j].Name, contacts[j + 1].Name);
+                if (res > 0)
+                {
+                    swap = contacts[j];
+                    contacts[j] = contacts[j + 1];
+                    contacts[j + 1] = swap;
+                }
+            }
+        }
+        printf("Contacts sorted by name (A-Z).\n");
+        printf("----------------------------------------------------\n");
+        break;
+    case '2':
+        for (int i = 0; i < contacts_num; i++)
+        {   
+            for (int j = 0; j < contacts_num - i - 1; j++)
+            {
+                res = strcmp(contacts[j].Phone_Number, contacts[j + 1].Phone_Number);
+                if (res > 0)
+                {
+                    swap = contacts[j];
+                    contacts[j] = contacts[j + 1];
+                    contacts[j + 1] = swap;
+                }
+            }
+        }
+        printf("Contacts sorted by phone number (0-9).\n");
+        printf("----------------------------------------------------\n");
+        break;
+    case '3':
+        for (int i = 0; i < contacts_num; i++)
+        {   
+            for (int j = 0; j < contacts_num - i - 1; j++)
+            {
+                res = strcmp(contacts[j].Email, contacts[j + 1].Email);
+                if (res > 0)
+                {
+                    swap = contacts[j];
+                    contacts[j] = contacts[j + 1];
+                    contacts[j + 1] = swap;
+                }
+            }
+        }
+        printf("Contacts sorted by email (A-Z).\n");
+        printf("----------------------------------------------------\n");
+        break;
+    default:
+        printf("Invalid choice, please select a valid option.\n");
+        printf("----------------------------------------------------\n");
+        break;
+    }
 }
