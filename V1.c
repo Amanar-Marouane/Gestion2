@@ -276,10 +276,9 @@ void modify(){
     search_index = -1;
 }
 int name_validator(int contacts_num){
-    contacts[contacts_num].Name[strcspn(contacts[contacts_num].Name," ")] = '\0';
     for (int i = 0;contacts[contacts_num].Name[i] != '\0' ; i++)
     {
-        if (!isalpha(contacts[contacts_num].Name[i]))
+        if (!isalpha(contacts[contacts_num].Name[i]) && !isspace(contacts[contacts_num].Name[i]))
         {
             printf("==>Contact name is not valid .\n(Must contain only alphabets!!)\n");
             printf("----------------------------------------------------------------\n");
@@ -422,9 +421,9 @@ void Display_One_contact(){
 }
 void Display_All(){
     for (int i = 0; i < contacts_num; i++) {
-        printf("Name: %s", contacts[i].Name);
-        printf("\nPhone: %s", contacts[i].Phone_Number);
-        printf("\nEmail: %s\n", contacts[i].Email);
+        printf("Name: %s.", contacts[i].Name);
+        printf("\nPhone: %s.", contacts[i].Phone_Number);
+        printf("\nEmail: %s.\n", contacts[i].Email);
         printf("----------------------------------------\n");
     }
 }
