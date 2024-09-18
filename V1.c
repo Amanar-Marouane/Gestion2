@@ -420,6 +420,11 @@ void Display_One_contact(){
     search_index = -1;
 }
 void Display_All(){
+    if (contacts_num == 0)
+    {
+        printf("No contact to show, please add a contact first!!\n");
+        printf("----------------------------------------------------\n");
+    }
     for (int i = 0; i < contacts_num; i++) {
         printf("Name: %s.", contacts[i].Name);
         printf("\nPhone: %s.", contacts[i].Phone_Number);
@@ -431,6 +436,7 @@ void sorting(){
     if (contacts_num == 0)
     {
         printf("No contact to sort.\n");
+        printf("-----------------------------------------------------------------------\n");
         return;
     }
     char choice[10];
